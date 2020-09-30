@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <title>preview</title>
+    <link rel="shortcut icon" type="image/x-icon" href="https://www.baidu.com/cache/icon/favicon.ico">
+    <script>
+        (function () {
+            // 设置rem基准值
+            var win = window;
+            var html = document.documentElement;
+            var timer = null;
+
+            function setRem() {
+                var width = html.getBoundingClientRect().width;
+                // width = Math.min(width, 420);
+                // 真实尺寸除以75
+                var rem = width / 10;
+                // win.rem = rem;
+                html.style.fontSize = rem + 'px';
+            }
+
+            win.addEventListener('resize',function() {
+                clearTimeout(timer);
+                timer = setTimeout(setRem, 300);
+            }, false);
+            setRem();
+        })();
+
+        function openDialog () {
+            if (alert(window.dialogContent)) {
+                alert(window.dialogContent);
+            }
+        }
+        function goToComplain () {
+            window.location.href = '//localhost/index.html'
+        }
+    </script>
+    <link rel="stylesheet" href="./libs/swiper.css">
+    <script src="./libs/swiper.js"></script>
+    <script src="./libs/axios.js"></script>
+    <style>
+        .app {
+            width: 10rem;
+            height: 200vh;
+            background: gray;
+            /*background: url(./libs/tiktok.PNG) no-repeat center center;*/
+            background-size: 100% 100%;
+        }
+        .swiper-container {
+            width: 10rem;
+            height: 4rem;
+            font-size: 12px;
+            color: #fff;
+        }
+        .slide-content {
+            width: calc(100% - 40px);
+            margin: 20px;
+        }
+        .second-content {
+            margin-top: 20px;
+        }
+        .change-data {
+            margin: 20px;
+        }
+        .purchased {
+            /*background: purple;*/
+            float: left;
+            width: 3rem;
+            height: 2rem;
+            color: #fff;
+            text-align: center;
+        }
+        .data-title {
+            font-size: 16px;
+            padding-bottom: 10px;
+        }
+        .purchased-count {
+            font-size: 20px;
+        }
+        .views-count {
+            font-size: 20px;
+        }
+        .views {
+            font-size: 20px;
+            /*background: purple;*/
+            float: right;
+            width: 3rem;
+            height: 2rem;
+            color: #fff;
+            text-align: center;
+        }
+        .buttons-group {
+            width: 6rem;
+            height: 3rem;
+            position: relative;
+            margin-left: auto;
+            margin-right: auto;
+            top: 6rem;
+            left: 0;
+            right: 0;
+        }
+        .purchase {
+            text-align: center;
+            border-radius: 38px;
+            width: 2.5rem;
+            height: 1rem;
+            line-height: 1rem;
+            color: #fff;
+            font-size: 18px;
+            background: #fef000;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 20px;
+        }
+        .complain {
+            text-align: center;
+            margin: auto;
+            background: #ff0102;
+            border-radius: 38px;
+            width: 2.5rem;
+            line-height: 1rem;
+            color: #fff;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+        </div>
+    </div>
+    <div class="change-data">
+        <div class="purchased">
+            <div class="data-title">已购买</div>
+            <div class="purchased-count"></div>
+        </div>
+        <div class="views">
+            <div class="data-title">浏览中</div>
+            <div class="views-count"></div>
+        </div>
+    </div>
+    <div class="buttons-group">
+        <p class="purchase" onclick="openDialog()">购买</p>
+        <p class="complain" onclick="goToComplain()">投诉</p>
+    </div>
+</div>
+<script>
+    var partCont = function (slideContent, step, data) {
+        var firstContent = document.createElement('div');
+        if (step === 1) {
+            firstContent.className = 'first-content';
+        } else {
+            firstContent.className = 'second-content';
+        }
+        slideContent.appendChild(firstContent);
+        var cellPhone = document.createElement('div');
+        cellPhone.className = 'cell-phone';
+        var appreciation = document.createElement('div');
+        appreciation.className = 'appreciation';
+        firstContent.appendChild(cellPhone);
+        firstContent.appendChild(appreciation);
+        if (step === 1) {
+            cellPhone.appendChild(document.createTextNode(data[0].mobilephone));
+            appreciation.appendChild(document.createTextNode(data[0].content));
+        } else {
+            cellPhone.appendChild(document.createTextNode(data[1].mobilephone));
+            appreciation.appendChild(document.createTextNode(data[1].content));
+        }
+    };
+    // data is an array of two objects one of which includes mobilephone and content fields
+    var createSlide = function (data) {
+        var swiperSlide = document.createElement('div');
+        document.querySelector('.swiper-wrapper').appendChild(swiperSlide);
+        swiperSlide.className = 'swiper-slide';
+        var slideContent = document.createElement('div');
+        slideContent.className = 'slide-content';
+        swiperSlide.appendChild(slideContent);
+        partCont(slideContent, 1, data);
+        partCont(slideContent, 2, data);
+    };
+    // var dataList = [[{mobilephone: 18654467765, content: '这个平台真的很好，不仅下载迅速，而且还有现金奖励'}, {
+    //     mobilephone: 28654467765,
+    //     content: '这个平台真的很好，不仅下载迅速，而且还有现金奖励'
+    // }]];
+    // render
+    function getSwiperContent() {
+        return axios.get('/demo/comment/selectAll');
+    }
+
+    function getViewsCount() {
+        return axios.get('/demo/order/selectAll');
+    }
+
+    function getDialogContent() {
+        return axios.get('/demo/paymentInfo/selectAll');
+    }
+    Promise.all([getSwiperContent(), getViewsCount(), getDialogContent()])
+        .then(function (results) {
+            const swiperContent = results[0].data;
+            const viewsCount = results[1].data;
+            window.dialogContent = results[2].data.rows[0].content;
+            console.log('result', results);
+            var dataList = swiperContent.rows;
+            if (dataList.length % 2 !== 0) {
+                dataList.push(dataList[0]);
+            }
+            var newDataList = [];
+            for (var i = 0; i < dataList.length - 1; i = i + 2) {
+                var newData = [];
+                newData.push(dataList[i]);
+                newData.push(dataList[i + 1]);
+                newDataList.push(newData);
+            }
+            newDataList.forEach(function (data) {
+                createSlide(data);
+            });
+            var mySwiper = new Swiper('.swiper-container', {
+                direction: 'horizontal', // 垂直切换选项
+                loop: true, // 循环模式选项
+                freeMode: false,
+                autoplay: {
+                    delay: 3000,
+                    stopOnLastSlide: false,
+                    disableOnInteraction: true
+                }
+            });
+            document.querySelector('.purchased-count').innerHTML = viewsCount.rows[0].purchased;
+            document.querySelector('.views-count').innerHTML = viewsCount.rows[0].browsing;
+        });
+</script>
+</body>
+</html>

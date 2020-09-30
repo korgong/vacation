@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <title>preview</title>
+    <link rel="shortcut icon" type="image/x-icon" href="https://www.baidu.com/cache/icon/favicon.ico">
+    <script>
+        (function () {
+            // 设置rem基准值
+            var win = window;
+            var html = document.documentElement;
+            var timer = null;
+
+            function setRem() {
+                var width = html.getBoundingClientRect().width;
+                // width = Math.min(width, 420);
+                // 真实尺寸除以75
+                var rem = width / 10;
+                // win.rem = rem;
+                html.style.fontSize = rem + 'px';
+            }
+
+            win.addEventListener('resize',function() {
+                clearTimeout(timer);
+                timer = setTimeout(setRem, 300);
+            }, false);
+            setRem();
+        })();
+    </script>
+    <style>
+        .app {
+            background: #000;
+            width: 10rem;
+        }
+        .complaint-reason {
+            color: #fff;
+            font-size: 26px;
+            height: 4rem;
+            line-height: 4rem;
+            text-align: center;
+        }
+        .complaint-item {
+            position: relative;
+            color: #fff;
+            font-size: 20px;
+            height: 2rem;
+            line-height: 2rem;
+            margin: 0 20px;
+            border-top: 1px solid #fff;
+            /*-webkit-transform: scale(0.5, 0.5);*/
+            background: #000;
+        }
+        .complaint-item::after {
+            content: '>';
+            position: absolute;
+            right: 30px;
+        }
+        .infringement {
+            height: 3rem;
+        }
+        .infringement::after {
+            top: 0;
+            content: '>';
+            position: absolute;
+            right: 30px;
+        }
+        .title {
+            padding: 8px 0;
+            max-width: 8rem;
+            height: 33px;
+            line-height: 33px;
+            font-size: 20px;
+        }
+        .description {
+            max-width: 8rem;
+            height: 36px;
+            line-height: 18px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="complaint-reason">请选择投诉原因</div>
+    <div class="items">
+        <div class="complaint-item coronavirus-related" data-id="a">新冠肺炎疫情相关</div>
+        <div class="complaint-item fraud" data-id="b">欺诈</div>
+        <div class="complaint-item sexual" data-id="c">色情</div>
+        <div class="complaint-item pornographic" data-id="d">诱导行为</div>
+        <div class="complaint-item fake-news" data-id="e">不实信息</div>
+        <div class="complaint-item crime" data-id="f">违法犯罪</div>
+        <div class="complaint-item harass" data-id="g">骚扰</div>
+        <div class="complaint-item others" data-id="h">其他</div>
+        <div class="complaint-item infringement" data-id="i">
+            <div class="title">侵权(冒充他人、侵犯名誉等)</div>
+            <div class="description">个人/企业等民事主体被诽谤侮辱、人身权或知识产权等被侵犯请选择“侵权”投诉。</div>
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelector('.items').onclick = function (e) {
+        let category = e.target.getAttribute('data-id');
+        let categoryMap = {a: true, b: true, d: true};
+        if (categoryMap[category]) {
+            location.href = ' //localhost/detail.html?' + 'category=' + category;
+        } else {
+            location.href = '//localhost/accuse.html';
+        }
+    }
+</script>
+</body>
+</html>

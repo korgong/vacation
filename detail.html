@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <title>preview</title>
+    <link rel="shortcut icon" type="image/x-icon" href="https://www.baidu.com/cache/icon/favicon.ico">
+    <script>
+        (function () {
+            // 设置rem基准值
+            var win = window;
+            var html = document.documentElement;
+            var timer = null;
+
+            function setRem() {
+                var width = html.getBoundingClientRect().width;
+                // width = Math.min(width, 420);
+                // 真实尺寸除以75
+                var rem = width / 10;
+                // win.rem = rem;
+                html.style.fontSize = rem + 'px';
+            }
+
+            win.addEventListener('resize',function() {
+                clearTimeout(timer);
+                timer = setTimeout(setRem, 300);
+            }, false);
+            setRem();
+        })();
+    </script>
+    <style>
+        .app {
+            background: #000;
+            width: 10rem;
+            min-height: 100vh;
+        }
+        .complaint-reason {
+            color: #fff;
+            font-size: 26px;
+            height: 4rem;
+            line-height: 4rem;
+            text-align: center;
+        }
+        .complaint-item {
+            position: relative;
+            color: #fff;
+            font-size: 20px;
+            height: 2rem;
+            line-height: 2rem;
+            margin: 0 20px;
+            border-top: 1px solid #fff;
+            /*-webkit-transform: scale(0.5, 0.5);*/
+            background: #000;
+        }
+        .complaint-item::after {
+            content: '>';
+            position: absolute;
+            right: 30px;
+        }
+        .infringement {
+            height: 3rem;
+        }
+        .infringement::after {
+            top: 0;
+            content: '>';
+            position: absolute;
+            right: 30px;
+        }
+        .title {
+            padding: 8px 0;
+            max-width: 8rem;
+            height: 33px;
+            line-height: 33px;
+            font-size: 20px;
+        }
+        .description {
+            max-width: 8rem;
+            height: 36px;
+            line-height: 18px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="complaint-reason"></div>
+<!--    <div class="complaint-item"></div>-->
+</div>
+<script>
+    let getQueryParameter = function(parameterName) {
+        let arrStr = window.location.search.substring(1).split('&');
+        for (let i = 0; i < arrStr.length; i++) {
+            let item = arrStr[i].split('=');
+            if (item[0] == parameterName) {
+                return decodeURI(item[1]);
+            }
+        }
+    };
+    let categoryMap = {
+        a: ['利用疫情诈骗、虚假募捐', '利用疫情传播夸大、不实信息', '野生动物贩卖、宰杀', '其他疫情相关'],
+        b: ['多级分销', '网络借贷', '兼职赚钱', '高额返利', '相亲交友', '虚假活动', '高利益理财', '微盘微交易', '不在以上类型中'],
+        d: ['诱导分享', '诱导关注'], e: ['政治类不实信息', '医疗健康类不实信息', '社会事件类不实信息']
+    };
+    let category = getQueryParameter('category');
+    let titleElement = document.querySelector('.complaint-reason');
+    switch (category) {
+        case 'a':
+            titleElement.appendChild(document.createTextNode('请选择新冠肺炎疫情相关类型'));
+            break;
+        case 'b':
+            titleElement.appendChild(document.createTextNode('请选择欺诈相关类型'));
+            break;
+        case 'd':
+            titleElement.appendChild(document.createTextNode('请选择诱导行为相关类型'));
+            break;
+    }
+    let detailList = categoryMap[category];
+    let container = document.querySelector('.app');
+    // a temp variable
+    let element;
+    detailList.forEach(function (item) {
+        element = document.createElement('div');
+        element.className = 'complaint-item';
+        element.appendChild(document.createTextNode(item));
+        element.addEventListener('click', function () {
+            location.href = '//localhost/accuse.html';
+        });
+        container.appendChild(element);
+    });
+</script>
+</body>
+</html>
